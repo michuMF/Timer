@@ -2,15 +2,21 @@ import { useRef, useState } from "react"
 import ResultModal from "./ResultModal"
 
 const TimerChallenge = ({ title, targetTime }) => {
+	console.log(targetTime)
 	const timer = useRef()
 	const dialog = useRef()
 
 	const [timeRemaining, setTimeRemaining] = useState(targetTime * 1000)
-	const timerIsActive = timeRemaining > 0 && timeRemaining < targetTime + 1000
+
+	const timerIsActive = timeRemaining > 0 && timeRemaining < targetTime * 1000
+
 	if (timeRemaining <= 0) {
 		clearInterval(timer.current)
-		setTimeRemaining(targetTime * 1000)
 		dialog.current.open()
+	}
+
+	function handleReset() {
+		setTimeRemaining(targetTime * 1000)
 	}
 	const handleStart = () => {
 		timer.current = setInterval(() => {
@@ -23,7 +29,13 @@ const TimerChallenge = ({ title, targetTime }) => {
 	}
 	return (
 		<>
-			<ResultModal ref={dialog} result='lost' targetTime={targetTime} />
+			<ResultModal
+				ref={dialog}
+				result='lost'
+				targetTime={targetTime}
+				remainingTime={timeRemaining}
+				handleReset={handleReset}
+			/>
 
 			<section className='challenge'>
 				<h2>{title}</h2>
